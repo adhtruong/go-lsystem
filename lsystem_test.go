@@ -26,6 +26,21 @@ func TestIterate(t *testing.T) {
 	assertEqual(t, "AAB", system.Iterate("BA"))
 }
 
+func TestIterateWithConst(t *testing.T) {
+	var systemWithConstants = LSystem{
+		"F",
+		"+",
+		"F",
+		map[rune]string{
+			'F': "F+",
+		},
+	}
+	assertEqual(t, "", systemWithConstants.Iterate(""))
+	assertEqual(t, "F+", systemWithConstants.Iterate("F"))
+	assertEqual(t, "+", systemWithConstants.Iterate("+"))
+	assertEqual(t, "F++", systemWithConstants.Iterate("F+"))
+}
+
 func TestGeneration(t *testing.T) {
 	assertEqual(t, "A", system.Generation(0))
 	assertEqual(t, "AB", system.Generation(1))
@@ -47,4 +62,17 @@ func TestProcess(t *testing.T) {
 		},
 	)
 	assertEqual(t, "ABA", output)
+}
+
+func TestProcessNoMatch(t *testing.T) {
+	var output string
+	Process(
+		"ABA",
+		map[rune]func(){
+			'A': func() {
+				output += "A"
+			},
+		},
+	)
+	assertEqual(t, "AA", output)
 }
